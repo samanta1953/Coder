@@ -186,33 +186,7 @@ function payAdvance(){
 
   window.location.href = upiURL;
 }
-</script>
-  
-<form id="appForm">
-  <label>App Type</label>
-  <select id="appType">
-    <option value="Business">Business</option>
-    <option value="Shop">Shop</option>
-    <option value="Custom">Custom</option>
-  </select>
-
-  <label>Estimated Total Price</label>
-  <input type="number" id="totalPrice">
-
-  <label>Advance Amount (30%)</label>
-  <input type="number" id="advanceAmount">
-
-  <label>Description</label>
-  <textarea id="description"></textarea>
-
-  <label>Payment Method</label>
-  <select id="paymentMethod">
-    <option value="UPI">UPI</option>
-    <option value="Online">Online</option>
-  </select>
-
-  <button type="submit">Submit Request</button>
-</form>
+<!-- Your existing HTML content -->
 
 <script>
 document.getElementById("appForm").addEventListener("submit", function(e){
@@ -222,11 +196,11 @@ document.getElementById("appForm").addEventListener("submit", function(e){
     "https://docs.google.com/forms/d/e/1FAIpQLSdGAO4yAmsQWgzTBRYM9ySWwivQnUebhaD8RG9bG2dYkIHyhQ/formResponse";
 
   const data = new FormData();
-  data.append("entry.2005620554", document.getElementById("appType").value);
-  data.append("entry.1045781291", document.getElementById("totalPrice").value);
-  data.append("entry.1065046570", document.getElementById("advanceAmount").value);
-  data.append("entry.839337160", document.getElementById("description").value);
-  data.append("entry.1166974658", document.getElementById("paymentMethod").value);
+  data.append("entry.1795590782", document.getElementById("appType").value);
+  data.append("entry.1305584766", document.getElementById("totalPrice").value);
+  data.append("entry.1653293969", document.getElementById("advance").value);
+  data.append("entry.1922413189", document.querySelector("textarea").value);
+  data.append("entry.218273767", document.querySelector(".pay-option .active")?.innerText || "");
 
   fetch(formURL, {
     method: "POST",
@@ -237,6 +211,4 @@ document.getElementById("appForm").addEventListener("submit", function(e){
   alert("✅ Request submitted successfully!");
   this.reset();
 });
-      </script>
-</body>
-</html>
+</script>
