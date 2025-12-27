@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>App Chaiye</title>
+<title>App Request</title>
 
 <style>
 body{
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family:Arial, sans-serif;
   background:#f2f4f8;
 }
-
 .app{
   max-width:420px;
   margin:auto;
@@ -18,63 +18,50 @@ body{
   min-height:100vh;
   padding:20px;
 }
-
 h2{text-align:center;}
-
 .card{
   background:#fff;
   padding:15px;
   border-radius:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
   margin-bottom:15px;
 }
-
 label{font-weight:bold;}
-
-select, textarea, input{
+select,textarea,input{
   width:100%;
   padding:10px;
   border-radius:8px;
   border:1px solid #ccc;
-  font-size:15px;
   margin-top:5px;
 }
-
-textarea{height:80px; resize:none;}
-
+textarea{height:80px;resize:none;}
 button{
   width:100%;
   padding:15px;
   border:none;
   border-radius:10px;
   background:#007bff;
-  color:white;
+  color:#fff;
   font-size:16px;
   font-weight:bold;
   margin-top:10px;
 }
-
 .pay-option{
   display:flex;
   gap:10px;
 }
-
 .pay-option button{
   background:#eee;
   color:#000;
-  font-size:14px;
 }
-
 .pay-option button.active{
   background:#28a745;
-  color:white;
+  color:#fff;
 }
-
 .advance-box{
   background:#e9f5ff;
   padding:10px;
   border-radius:8px;
-  margin-top:10px;
   font-weight:bold;
 }
 </style>
@@ -83,132 +70,105 @@ button{
 <body>
 
 <div class="app">
-
 <h2>🚀 Request an App</h2>
+
+<form id="appForm">
 
 <div class="card">
 <label>App Type</label>
-<select id="appType" onchange="setEstimate()">
-  <option value="">Select App Type</option>
-  <option value="business">Business App</option>
-  <option value="shop">Shop App</option>
-  <option value="custom">Custom App</option>
+<select id="appType" required onchange="setEstimate()">
+<option value="">Select</option>
+<option value="Business">Business</option>
+<option value="Shop">Shop</option>
+<option value="Custom">Custom</option>
 </select>
 </div>
 
 <div class="card">
-<label>Estimated Total Price (₹)</label>
+<label>Total Price (₹)</label>
 <input type="number" id="totalPrice" readonly>
 </div>
 
 <div class="card">
-<label>Advance Payment (30%)</label>
-<div class="advance-box" id="advanceAmount">₹0</div>
+<label>Advance (30%)</label>
+<div class="advance-box">₹ <span id="advance">0</span></div>
 </div>
 
 <div class="card">
 <label>Description</label>
-<textarea placeholder="Explain your app idea"></textarea>
+<textarea id="description" required></textarea>
 </div>
 
 <div class="card">
 <label>Payment Method</label>
 <div class="pay-option">
-  <button type="button" onclick="setPay(this)">UPI</button>
-  <button type="button" onclick="setPay(this)">Online</button>
+<button type="button" onclick="setPay(this)">UPI</button>
+<button type="button" onclick="setPay(this)">Online</button>
 </div>
 </div>
 
-<button type="button" onclick="submitRequest()">Submit Request</button>
+<button type="submit">Submit & Pay Advance</button>
 
-<button type="button" style="background:#28a745" onclick="payAdvance()">
-💰 Pay 30% Advance
-</button>
-
+</form>
 </div>
 
 <script>
-let advance = 0;
-let paymentSelected = false;
+let advanceAmount=0;
+let paymentMethod="";
 
 function setEstimate(){
-  const type = document.getElementById("appType").value;
-  const priceInput = document.getElementById("totalPrice");
+  let type=document.getElementById("appType").value;
+  let price=0;
+  if(type==="Business") price=10000;
+  if(type==="Shop") price=15000;
+  if(type==="Custom") price=25000;
 
-  if(type === "business"){
-    priceInput.value = 10000;
-  } else if(type === "shop"){
-    priceInput.value = 15000;
-  } else if(type === "custom"){
-    priceInput.value = 25000;
-  } else {
-    priceInput.value = "";
-  }
-
-  calculateAdvance();
-}
-
-function calculateAdvance(){
-  const total = document.getElementById("totalPrice").value;
-  advance = Math.round(total * 0.3);
-  document.getElementById("advanceAmount").innerText = "₹" + (advance || 0);
+  document.getElementById("totalPrice").value=price;
+  advanceAmount=Math.round(price*0.3);
+  document.getElementById("advance").innerText=advanceAmount;
 }
 
 function setPay(btn){
-  document.querySelectorAll(".pay-option button")
-    .forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".pay-option button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
-  paymentSelected = true;
+  paymentMethod=btn.innerText;
 }
 
-function submitRequest(){
-  alert("✅ Request submitted.\nPlease pay 30% advance to start work.");
-}
-
-function payAdvance(){
-  if(advance <= 0){
-    alert("⚠️ Select app type first");
-    return;
-  }
-
-  if(!paymentSelected){
-    alert("⚠️ Select payment method");
-    return;
-  }
-
-  const upiId = "merizindegi40-1@okhdfcbank"; // 🔴 নিজের UPI ID দাও
-  const payeeName = "App Chaiye";
-  const amount = advance;
-  const note = "30% Advance for App Development";
-
-  const upiURL =
-    `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
-
-  window.location.href = upiURL;
-}
-<!-- Your existing HTML content -->
-
-<script>
-document.getElementById("appForm").addEventListener("submit", function(e){
+document.getElementById("appForm").addEventListener("submit",function(e){
   e.preventDefault();
+  if(!paymentMethod){
+    alert("Select payment method");
+    return;
+  }
 
-  const formURL =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdGAO4yAmsQWgzTBRYM9ySWwivQnUebhaD8RG9bG2dYkIHyhQ/formResponse";
+  const formURL="https://docs.google.com/forms/d/e/1FAIpQLSdGAO4yAmsQWgzTBRYM9ySWwivQnUebhaD8RG9bG2dYkIHyhQ/formResponse";
 
-  const data = new FormData();
-  data.append("entry.1795590782", document.getElementById("appType").value);
-  data.append("entry.1305584766", document.getElementById("totalPrice").value);
-  data.append("entry.1653293969", document.getElementById("advance").value);
-  data.append("entry.1922413189", document.querySelector("textarea").value);
-  data.append("entry.218273767", document.querySelector(".pay-option .active")?.innerText || "");
+  const data=new FormData();
+  data.append("entry.1795590782",document.getElementById("appType").value);
+  data.append("entry.1305584766",document.getElementById("totalPrice").value);
+  data.append("entry.1653293969",advanceAmount);
+  data.append("entry.1922413189",document.getElementById("description").value);
+  data.append("entry.218273767",paymentMethod);
 
-  fetch(formURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: data
-  });
+  fetch(formURL,{method:"POST",mode:"no-cors",body:data});
 
-  alert("✅ Request submitted successfully!");
+  openUPIPayment(advanceAmount);
+
+  alert("Request submitted! Pay advance to start work.");
   this.reset();
+  document.getElementById("advance").innerText="0";
+  paymentMethod="";
 });
+
+function openUPIPayment(amount){
+  const upiId="merizindegi40-1@okhdfcbank";   // 🔴 নিজের UPI ID দেবে
+  const name="App Chaiye";
+  const note="30% Advance App Development";
+
+  const upiURL=`upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
+  window.location.href=upiURL;
+}
 </script>
+
+</body>
+  </html>
