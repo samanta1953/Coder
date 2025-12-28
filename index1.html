@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+  <h2>Email Login</h2>
+
+  <input id="email" placeholder="Enter email">
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <br><br>
+
+  <input id="otp" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify</button>
+
+  <p id="msg"></p>
+
+<script>
+async function sendOTP(){
+  const email = document.getElementById("email").value;
+  const res = await fetch("http://localhost:3000/send-otp",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email})
+  });
+  const data = await res.json();
+  document.getElementById("msg").innerText = data.message;
+}
+
+async function verifyOTP(){
+  const email = document.getElementById("email").value;
+  const otp = document.getElementById("otp").value;
+
+  const res = await fetch("http://localhost:3000/verify-otp",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email, otp})
+  });
+
+  const data = await res.json();
+
+  if(res.ok){
+    localStorage.setItem("loggedIn","yes");
+    window.location.href = "index2.html";
+  }else{
+    document.getElementById("msg").innerText = data.message;
+  }
+}
+</script>
+</body>
+</html>
