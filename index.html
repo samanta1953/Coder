@@ -43,7 +43,7 @@ async function verifyOTP(){
 
   if(res.ok){
     localStorage.setItem("loggedIn","yes");
-    window.location.href = "index2.html";
+    window.location.href = "index1.html";
   }else{
     document.getElementById("msg").innerText = data.message;
   }
