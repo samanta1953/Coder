@@ -23,7 +23,7 @@ async function sendOTP(){
   const res = await fetch("http://localhost:3000/send-otp",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email})
+    body:JSON.stringify({email, otp})
   });
   const data = await res.json();
   document.getElementById("msg").innerText = data.message;
@@ -43,7 +43,7 @@ async function verifyOTP(){
 
   if(res.ok){
     localStorage.setItem("loggedIn","yes");
-    window.location.href = "index1.html";
+    window.location.href = "index2.html";
   }else{
     document.getElementById("msg").innerText = data.message;
   }
